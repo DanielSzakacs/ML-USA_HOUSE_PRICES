@@ -1,7 +1,7 @@
 
 import pandas as pd 
 
-def remove_outliers_iqr(columns: list, df: pd.DataFrame) -> pd.DataFrame:
+def remove_outliers_iqr(columns: list, data: pd.DataFrame) -> pd.DataFrame:
   """
     Removes outliers from the specified columns of a DataFrame using the IQR method.
 
@@ -16,10 +16,11 @@ def remove_outliers_iqr(columns: list, df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: A new DataFrame with outliers removed from the specified columns.
     """
-  Q1 = df[columns].quantile(0.25)
-  Q3 = df[columns].quantile(0.75)
-
+  Q1 = data[float_cols].quantile(0.25)
+  Q3 = data[float_cols].quantile(0.75)
   IQR = Q3 - Q1
   lower_bound = Q1 - 1.5 * IQR
   upper_bound = Q3 + 1.5 * IQR
-  return df[(df[columns] >= lower_bound) & (df[columns] <= upper_bound)]
+
+  mask = (data[float_cols] >= lower_bound) & (data[float_cols] <= upper_bound)
+  return data[mask.all(axis=1)].copy()
